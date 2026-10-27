@@ -1,6 +1,9 @@
 # Netlify builds this site from the GitHub repo (branch main):
-# every push copies the page into deploy/public and publishes only that folder,
+# every push runs build.mjs (src/ -> dist/) and publishes only dist/,
 # so README, design notes and the parked AI function never go online.
 [build]
-  command = "cp index.html og.jpg deploy/public/"
-  publish = "deploy/public"
+  command = "node build.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"

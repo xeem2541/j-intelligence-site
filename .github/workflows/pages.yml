@@ -1,5 +1,5 @@
 # Publishes the site to GitHub Pages on every push to main.
-# Only index.html and og.jpg go online, the same files Netlify serves.
+# Builds src/ into dist/ and publishes only dist/, the same files Netlify serves.
 name: Deploy to GitHub Pages
 
 on:
@@ -24,13 +24,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: Collect the site files
-        run: |
-          mkdir _site
-          cp index.html og.jpg _site/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build the site
+        run: node build.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: dist
       - id: deployment
         uses: actions/deploy-pages@v4
