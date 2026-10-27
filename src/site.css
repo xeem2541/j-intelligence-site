@@ -437,6 +437,7 @@ section.s:nth-of-type(even)::before{--gx:70%}
 .faq summary svg{flex:none;width:20px;height:20px;transition:transform .3s var(--ease)}
 .faq details[open] summary svg{transform:rotate(45deg)}
 .faq .ans{overflow:hidden}
+.faq .ans a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--violet);text-underline-offset:3px}
 .faq details p{padding:0 0 20px;color:var(--ink-mute);max-width:680px}
 .faq summary{transition:opacity .15s}
 
@@ -611,3 +612,5 @@ html.has-mbar .jbot-fab{--fy:calc(-76px - var(--nlb,0px))}
 .rm .tier.feat .ring::before{background:var(--grad)}
 .rm .orb{transform:translate(-50%,-50%)!important}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* FAQ page: heading beside its questions on wide screens */
+@media (min-width:960px){.faq-sec .col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:56px;align-items:start}.faq-sec .head{margin:0;position:sticky;top:96px}}
