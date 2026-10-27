@@ -9,20 +9,27 @@
 |---|---|
 | `index.html` | ไฟล์หลักของเว็บ (HTML, CSS, JS อยู่ในไฟล์เดียว) แก้ที่ไฟล์นี้ |
 | `og.jpg` | ภาพตอนแชร์ลิงก์ (1200×630) |
-| `deploy/public/` | สำเนาที่ขึ้นเว็บจริง คัดลอก `index.html` และ `og.jpg` มาที่นี่ก่อน deploy |
-| `deploy/netlify.toml` | การตั้งค่า Netlify |
+| `deploy/public/` | โฟลเดอร์ที่ขึ้นเว็บจริง Netlify คัดลอก `index.html` และ `og.jpg` มาไว้ที่นี่เองตอน build |
+| `netlify.toml` | การตั้งค่า Netlify (คำสั่ง build และโฟลเดอร์ที่ publish) |
 | `chatbot-ai/` | แชทบอท AI จริง (Netlify Function) เก็บไว้ใช้ภายหลัง ต้องมี `ANTHROPIC_API_KEY` และเครดิต |
 | `skill/` | แนวทางดีไซน์ที่ใช้อ้างอิง |
 
 ## ขึ้นเว็บจริง
 
+GitHub เป็นต้นทาง: push ขึ้น branch `main` แล้ว Netlify จะ build และอัปเดตเว็บให้อัตโนมัติ
+
 ```bash
-cp index.html og.jpg deploy/public/
-cd deploy
-npx -y netlify-cli@17.38.1 deploy --prod --dir=public
+git add -A
+git commit -m "อธิบายสิ่งที่แก้"
+git push
 ```
 
-ต้องใส่ `--dir=public` ทุกครั้ง ถ้าไม่ใส่ CLI จะเลือกโฟลเดอร์ผิด
+สำรอง (ถ้า Netlify ยังไม่ได้เชื่อมกับ GitHub): deploy ด้วยมือจากโฟลเดอร์นี้
+
+```bash
+cp index.html og.jpg deploy/public/
+npx -y netlify-cli@17.38.1 deploy --prod --dir=deploy/public
+```
 
 ## หมายเหตุ
 
