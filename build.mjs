@@ -18,6 +18,9 @@ const walk = dir => readdirSync(dir).forEach(f => {
 });
 walk(join(here, "src", "pages"));
 
+// <!--include parts/x.html--> pastes a shared file (e.g. package cards used on several pages)
+const include = s => s.replace(/<!--include ([\w/.-]+)-->\n/g, (m, p) => src(p));
+
 const fill = (s, vars) => s.replace(/\{\{(\w+)\}\}/g, (m, k) => {
   if (!(k in vars)) throw new Error(`missing {{${k}}}`);
   return vars[k];
@@ -53,7 +56,7 @@ for (const file of pages) {
     "",
     fill(src("header.html"), vars).replace(/\n$/, ""),
     "",
-    fill(raw.slice(m[0].length), vars).replace(/\n$/, ""),
+    fill(include(raw.slice(m[0].length)), vars).replace(/\n$/, ""),
     "",
     fill(src("end.html"), vars).replace(/\n$/, ""),
     "",
