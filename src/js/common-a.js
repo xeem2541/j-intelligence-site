@@ -18,18 +18,21 @@
   links.addEventListener("click", e => { if (e.target.closest("a")) closeMenu(); });
   addEventListener("keydown", e => { if (e.key === "Escape" && links.classList.contains("open")) { closeMenu(); menuBtn.focus(); } });
 
-  // services dropdown: click or keyboard on every device, also opens under a mouse; Escape or a click outside closes it
-  const ddBtn = document.getElementById("ddBtn"), dd = ddBtn.parentElement;
-  const ddSet = on => ddBtn.setAttribute("aria-expanded", String(on));
-  ddBtn.addEventListener("click", () => ddSet(ddBtn.getAttribute("aria-expanded") !== "true"));
-  if (matchMedia("(hover:hover) and (pointer:fine) and (min-width:1024px)").matches) {
-    let t = 0;
-    dd.addEventListener("pointerenter", () => { clearTimeout(t); ddSet(true); });
-    dd.addEventListener("pointerleave", () => { t = setTimeout(() => ddSet(false), 180); });
-  }
-  dd.addEventListener("keydown", e => { if (e.key === "Escape" && ddBtn.getAttribute("aria-expanded") === "true") { ddSet(false); ddBtn.focus(); e.stopPropagation(); } });
-  document.addEventListener("click", e => { if (!dd.contains(e.target)) ddSet(false); });
-  dd.addEventListener("focusout", e => { if (!dd.contains(e.relatedTarget)) ddSet(false); });
+  // menu dropdowns (services, use cases): click or keyboard on every device, also open under a mouse; Escape or a click outside closes them
+  const hoverable = matchMedia("(hover:hover) and (pointer:fine) and (min-width:1024px)").matches;
+  document.querySelectorAll(".dd").forEach(dd => {
+    const ddBtn = dd.querySelector(".dd-btn");
+    const ddSet = on => ddBtn.setAttribute("aria-expanded", String(on));
+    ddBtn.addEventListener("click", () => ddSet(ddBtn.getAttribute("aria-expanded") !== "true"));
+    if (hoverable) {
+      let t = 0;
+      dd.addEventListener("pointerenter", () => { clearTimeout(t); ddSet(true); });
+      dd.addEventListener("pointerleave", () => { t = setTimeout(() => ddSet(false), 180); });
+    }
+    dd.addEventListener("keydown", e => { if (e.key === "Escape" && ddBtn.getAttribute("aria-expanded") === "true") { ddSet(false); ddBtn.focus(); e.stopPropagation(); } });
+    document.addEventListener("click", e => { if (!dd.contains(e.target)) ddSet(false); });
+    dd.addEventListener("focusout", e => { if (!dd.contains(e.relatedTarget)) ddSet(false); });
+  });
   document.querySelectorAll(".dd-menu a").forEach(a => { if (a.pathname === location.pathname) a.setAttribute("aria-current", "page"); });
 
   const fine = matchMedia("(hover:hover) and (pointer:fine)").matches, still = root.classList.contains("rm");
