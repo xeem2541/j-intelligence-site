@@ -1,0 +1,5 @@
+# Static site. Deploy from this folder with:
+#   npx netlify-cli deploy --prod --dir=public
+# The AI chat function (needs ANTHROPIC_API_KEY + credit) is parked in ../chatbot-ai/
+[build]
+  publish = "public"

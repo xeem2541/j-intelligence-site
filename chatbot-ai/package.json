@@ -1,0 +1,10 @@
+{
+  "name": "j-intelligence-site",
+  "private": true,
+  "type": "module",
+  "description": "J Intelligence site + the /api/chat assistant (Netlify Function)",
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.3.0",
+    "@netlify/blobs": "11.1.6"
+  }
+}
