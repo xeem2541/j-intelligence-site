@@ -26,6 +26,20 @@ const fill = (s, vars) => s.replace(/\{\{(\w+)\}\}/g, (m, k) => {
   return vars[k];
 });
 
+// canonical host, same as meta.html
+const site = "https://j-intelligence.netlify.app";
+// home page structured data: who runs the site (only facts shown on the site itself)
+const jsonld = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Organization", "@id": `${site}/#org`, name: "J Intelligence", url: `${site}/`, logo: `${site}/og.jpg`,
+      description: "รับทำ AI Chatbot เว็บไซต์ + AI และคอนเทนต์ AI สำหรับร้านค้าและ SME",
+      founder: { "@type": "Person", name: "Jakkarin Permchob" },
+      sameAs: ["https://fastwork.com/user/jakkarin.dev"] },
+    { "@type": "WebSite", "@id": `${site}/#website`, url: `${site}/`, name: "J Intelligence", inLanguage: "th", publisher: { "@id": `${site}/#org` } },
+  ],
+});
+
 rmSync(out, { recursive: true, force: true });
 for (const file of pages) {
   const raw = read(file);
@@ -46,6 +60,7 @@ for (const file of pages) {
     '<meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
     fill(src("meta.html"), vars).replace(/\n$/, ""),
+    ...(page.home ? [`<script type="application/ld+json">${jsonld}</script>`] : []),
     src("head-end.html").replace(/\n$/, ""),
     "<style>",
     src("site.css").replace(/\n$/, ""),
@@ -74,8 +89,7 @@ for (const file of pages) {
 }
 copyFileSync(join(here, "og.jpg"), join(out, "og.jpg"));
 
-// sitemap + robots for search engines; canonical URLs point at Netlify (same host as meta.html)
-const site = "https://j-intelligence.netlify.app";
+// sitemap + robots for search engines; canonical URLs point at Netlify
 const paths = pages.map(f => JSON.parse(read(f).match(/^<!--page (\{.*\}) -->/)[1]).path).sort();
 writeFileSync(join(out, "sitemap.xml"), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   + paths.map(p => `  <url><loc>${site}${p}</loc></url>`).join("\n") + "\n</urlset>\n");
