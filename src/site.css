@@ -621,3 +621,6 @@ html.has-mbar .jbot-fab{--fy:calc(-76px - var(--nlb,0px))}
 .legal p+p{margin-top:12px}
 .legal ul{display:grid;gap:10px;padding-left:22px}
 .legal a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--violet);text-underline-offset:3px}
+.foot-legal-links{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:13px}
+.foot-legal-links a{padding:8px 0;color:inherit;text-decoration:underline;text-decoration-color:var(--hair);text-underline-offset:3px}
+.foot-legal-links a:hover{text-decoration-color:currentColor}
