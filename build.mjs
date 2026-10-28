@@ -89,8 +89,11 @@ for (const file of pages) {
 }
 copyFileSync(join(here, "og.jpg"), join(out, "og.jpg"));
 
-// sitemap + robots for search engines; canonical URLs point at Netlify
-const paths = pages.map(f => JSON.parse(read(f).match(/^<!--page (\{.*\}) -->/)[1]).path).sort();
+// sitemap + robots for search engines, llms.txt for AI assistants; canonical URLs point at Netlify
+const metas = pages.map(f => JSON.parse(read(f).match(/^<!--page (\{.*\}) -->/)[1])).sort((a, b) => a.path.localeCompare(b.path));
+const paths = metas.map(m => m.path);
+writeFileSync(join(out, "llms.txt"), "# J Intelligence\n\n> ผู้ช่วย AI ที่ไม่ปล่อยให้ลูกค้ารอ: รับทำ AI Chatbot, เว็บไซต์ + AI และคอนเทนต์ AI สำหรับร้านค้าและ SME จ้างผ่าน Fastwork https://fastwork.com/user/jakkarin.dev\n\n## Pages\n\n"
+  + metas.map(m => `- [${m.title.replace(/ \| J Intelligence$/, "")}](${site}${m.path}): ${m.description}`).join("\n") + "\n");
 writeFileSync(join(out, "sitemap.xml"), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   + paths.map(p => `  <url><loc>${site}${p}</loc></url>`).join("\n") + "\n</urlset>\n");
 writeFileSync(join(out, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${site}/sitemap.xml\n`);
