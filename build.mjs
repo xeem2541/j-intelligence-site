@@ -73,4 +73,11 @@ for (const file of pages) {
   writeFileSync(dest, html);
 }
 copyFileSync(join(here, "og.jpg"), join(out, "og.jpg"));
+
+// sitemap + robots for search engines; canonical URLs point at Netlify (same host as meta.html)
+const site = "https://j-intelligence.netlify.app";
+const paths = pages.map(f => JSON.parse(read(f).match(/^<!--page (\{.*\}) -->/)[1]).path).sort();
+writeFileSync(join(out, "sitemap.xml"), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+  + paths.map(p => `  <url><loc>${site}${p}</loc></url>`).join("\n") + "\n</urlset>\n");
+writeFileSync(join(out, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${site}/sitemap.xml\n`);
 console.log(`built ${pages.length} page(s) into dist/`);
