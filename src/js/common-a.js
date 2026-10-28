@@ -90,7 +90,7 @@
   const mbar = document.getElementById("mbar"), band = document.getElementById("contact");
   const mq = matchMedia("(max-width:767px)");
   const setBar = () => {
-    const on = mq.matches && hero.getBoundingClientRect().bottom < 0 && band.getBoundingClientRect().top > innerHeight;
+    const on = mq.matches && hero.getBoundingClientRect().bottom < 0 && (!band || band.getBoundingClientRect().top > innerHeight);
     mbar.classList.toggle("show", on); root.classList.toggle("has-mbar", on);
   };
   addEventListener("scroll", setBar, { passive: true }); addEventListener("resize", setBar); setBar();

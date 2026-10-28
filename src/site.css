@@ -614,3 +614,10 @@ html.has-mbar .jbot-fab{--fy:calc(-76px - var(--nlb,0px))}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 /* FAQ page: heading beside its questions on wide screens */
 @media (min-width:960px){.faq-sec .col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:56px;align-items:start}.faq-sec .head{margin:0;position:sticky;top:96px}}
+/* legal pages: plain reading column */
+.legal{max-width:760px}
+.legal h3{margin:36px 0 10px;font-size:19px;font-weight:600;line-height:1.4}
+.legal p,.legal li{color:var(--ink-mute);line-height:1.75}
+.legal p+p{margin-top:12px}
+.legal ul{display:grid;gap:10px;padding-left:22px}
+.legal a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--violet);text-underline-offset:3px}
