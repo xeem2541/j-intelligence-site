@@ -1,5 +1,5 @@
 // Builds the site into dist/: every page in src/pages gets the shared head, CSS, header, footer and scripts.
-// Run: node build.mjs   (Netlify and GitHub Pages run it on every push)
+// Run: node build.mjs   (GitHub Pages runs it on every push)
 import { readFileSync, writeFileSync, mkdirSync, rmSync, copyFileSync, cpSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -26,8 +26,8 @@ const fill = (s, vars) => s.replace(/\{\{(\w+)\}\}/g, (m, k) => {
   return vars[k];
 });
 
-// canonical host, same as meta.html
-const site = "https://j-intelligence.netlify.app";
+// canonical host (GitHub Pages is the only host), same as meta.html
+const site = "https://xeem2541.github.io/j-intelligence-site";
 // home page structured data: who runs the site (only facts shown on the site itself)
 const jsonld = JSON.stringify({
   "@context": "https://schema.org",
@@ -91,7 +91,7 @@ copyFileSync(join(here, "og.jpg"), join(out, "og.jpg"));
 // videos and posters referenced as {{root}}media/...
 cpSync(join(here, "src", "media"), join(out, "media"), { recursive: true });
 
-// sitemap + robots for search engines, llms.txt for AI assistants; canonical URLs point at Netlify
+// sitemap + robots for search engines, llms.txt for AI assistants; canonical URLs point at GitHub Pages
 const metas = pages.map(f => JSON.parse(read(f).match(/^<!--page (\{.*\}) -->/)[1])).sort((a, b) => a.path.localeCompare(b.path));
 const paths = metas.map(m => m.path);
 writeFileSync(join(out, "llms.txt"), "# J Intelligence\n\n> ผู้ช่วย AI ที่ไม่ปล่อยให้ลูกค้ารอ: รับทำ AI Chatbot, เว็บไซต์ + AI และคอนเทนต์ AI สำหรับร้านค้าและ SME จ้างผ่าน Fastwork https://fastwork.com/user/jakkarin.dev\n\n## Pages\n\n"

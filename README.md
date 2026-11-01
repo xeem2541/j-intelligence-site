@@ -1,7 +1,7 @@
 # J Intelligence — เว็บไซต์
 
 เว็บรับทำ AI Chatbot, เว็บไซต์ + AI และคอนเทนต์ AI
-เว็บจริง: https://j-intelligence.netlify.app (สำรอง: https://xeem2541.github.io/j-intelligence-site/)
+เว็บจริง: https://xeem2541.github.io/j-intelligence-site/ (GitHub Pages; เลิกใช้ Netlify แล้ว 2026-11-01)
 
 ## โครงสร้าง
 
