@@ -1,6 +1,6 @@
 // Builds the site into dist/: every page in src/pages gets the shared head, CSS, header, footer and scripts.
 // Run: node build.mjs   (Netlify and GitHub Pages run it on every push)
-import { readFileSync, writeFileSync, mkdirSync, rmSync, copyFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync, copyFileSync, cpSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -88,6 +88,8 @@ for (const file of pages) {
   writeFileSync(dest, html);
 }
 copyFileSync(join(here, "og.jpg"), join(out, "og.jpg"));
+// videos and posters referenced as {{root}}media/...
+cpSync(join(here, "src", "media"), join(out, "media"), { recursive: true });
 
 // sitemap + robots for search engines, llms.txt for AI assistants; canonical URLs point at Netlify
 const metas = pages.map(f => JSON.parse(read(f).match(/^<!--page (\{.*\}) -->/)[1])).sort((a, b) => a.path.localeCompare(b.path));
