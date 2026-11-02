@@ -1,5 +1,6 @@
-  // site assistant: answers from the facts on this page (no AI, no server, no cost).
-  // Each topic lists Thai/English cue words; the topic with the highest score answers (narrow FAQ topics weigh 3x).
+  // site assistant: asks the j-assistant Cloudflare Worker (Workers AI, free quota) with the last 8 messages.
+  // If it fails, is slow (10 s) or is out of quota, the keyword answers below reply instead: each topic lists
+  // Thai/English cue words; the topic with the highest score answers (narrow FAQ topics weigh 3x).
   // Only Fastwork addresses in an answer become links; everything else is inserted as plain text
   const fab = document.getElementById("jbotFab"), bPanel = document.getElementById("jbotPanel"), bLog = document.getElementById("jbotLog");
   const bForm = document.getElementById("jbotForm"), bIn = document.getElementById("jbotIn"), bSugg = document.getElementById("jbotSugg");
@@ -68,17 +69,29 @@
     });
     bLog.append(m); bLog.scrollTop = bLog.scrollHeight; return m;
   };
-  const bAsk = q => {
-    q = q.trim().slice(0, 600);
+  const BOT = "https://j-assistant.xeem2541.workers.dev/", bHist = [];
+  const bAI = async q => {
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 10000);
+    try {
+      const r = await fetch(BOT, { method: "POST", headers: { "content-type": "application/json" }, signal: ctl.signal,
+        body: JSON.stringify({ messages: [...bHist, { role: "user", content: q }].slice(-8) }) });
+      const reply = r.ok && (await r.json()).reply;
+      if (reply) bHist.push({ role: "user", content: q }, { role: "assistant", content: reply });
+      return reply;
+    } catch { return null; } finally { clearTimeout(t); }
+  };
+  const bAsk = async q => {
+    q = q.trim().slice(0, 500);
     if (!q || bWaiting) return;
     bWaiting = true; bForm.setAttribute("aria-busy", "true"); bSugg.hidden = true; bIn.value = "";
     bAdd("cu", q);
-    const reply = bAnswer(q);
-    const done = () => { dots && dots.remove(); bAdd("ai", reply); bWaiting = false; bForm.removeAttribute("aria-busy"); bIn.focus(); };
-    if (root.classList.contains("rm")) { var dots = null; done(); return; }
-    var dots = document.createElement("div"); dots.className = "m ai typing on"; dots.setAttribute("aria-hidden", "true"); dots.innerHTML = "<i></i><i></i><i></i>";
-    bLog.append(dots); bLog.scrollTop = bLog.scrollHeight;
-    setTimeout(done, 650);
+    let dots = null;
+    if (!root.classList.contains("rm")) {
+      dots = document.createElement("div"); dots.className = "m ai typing on"; dots.setAttribute("aria-hidden", "true"); dots.innerHTML = "<i></i><i></i><i></i>";
+      bLog.append(dots); bLog.scrollTop = bLog.scrollHeight;
+    }
+    const reply = (await bAI(q)) || bAnswer(q);
+    dots && dots.remove(); bAdd("ai", reply); bWaiting = false; bForm.removeAttribute("aria-busy"); bIn.focus();
   };
   fab.addEventListener("click", () => bOpen(true));
   document.getElementById("jbotClose").addEventListener("click", () => bOpen(false));
