@@ -61,12 +61,18 @@
     bPanel.classList.toggle("open", on); fab.setAttribute("aria-expanded", String(on)); root.classList.toggle("jbot-on", on);
     if (on) setTimeout(() => bIn.focus(), 60); else if (refocus) fab.focus();
   };
+  // A Fastwork address is dropped from the text and the last "Fastwork" word becomes the link instead
+  // (AI replies often say "Fastwork: <url>", which would otherwise read "Fastwork Fastwork")
   const bAdd = (who, text) => {
     const m = document.createElement("div"); m.className = "m " + who;
-    text.split(/(https:\/\/fastwork\.com\/[\w./-]*[\w/])/).forEach((part, i) => {
-      if (i % 2) { const a = document.createElement("a"); a.href = part; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Fastwork"; a.setAttribute("aria-label", "Fastwork (เปิดในแท็บใหม่)"); m.append(a); }
-      else if (part) m.append(part);
-    });
+    const url = (text.match(/https:\/\/fastwork\.com\/[\w./-]*[\w/]/) || [])[0];
+    if (url) {
+      text = text.split(url).join("").replace(/Fastwork\s*:\s*/g, "Fastwork ").replace(/\s+([.,])/g, "$1").replace(/\s{2,}/g, " ").trim();
+      let at = text.lastIndexOf("Fastwork");
+      if (at < 0) { text += " Fastwork"; at = text.length - 8; }
+      const a = document.createElement("a"); a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Fastwork"; a.setAttribute("aria-label", "Fastwork (เปิดในแท็บใหม่)");
+      m.append(text.slice(0, at), a, text.slice(at + 8));
+    } else m.append(text);
     bLog.append(m); bLog.scrollTop = bLog.scrollHeight; return m;
   };
   const BOT = "https://j-assistant.xeem2541.workers.dev/", bHist = [];
